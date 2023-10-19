@@ -8,8 +8,8 @@ export async function POST(request: Request) {
         return new Response("OK");
     };
 
-    // this handles bot commands
-    if (update.message.entities && update.message.entities.filter(entity => entity.type === "bot_command").length) {
+    // this handles bot commands in private chats
+    if (update.message.chat.type === "private" && update.message.entities && update.message.entities.filter(entity => entity.type === "bot_command").length) {
         const command = update.message.entities.filter(entity => entity.type === "bot_command")[0];
         const commandName = update.message.text.slice(command.offset + 1, command.offset + command.length);
 
