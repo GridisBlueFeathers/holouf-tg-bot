@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
         switch (commandName) {
             case "yo":
-                sendMessage({message: "yo yo", chat: update.message.chat});
+                await sendMessage({message: "yo yo", chat: update.message.chat});
                 break;
         };
         return new Response("OK");
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
     // this handles other messages in private chats
     if (update.message.chat.type === "private") {
-        sendMessage({message: update.message.text, chat: update.message.chat});
+        await sendMessage({message: update.message.text, chat: update.message.chat});
         return new Response("OK");
     };
 
