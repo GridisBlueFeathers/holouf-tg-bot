@@ -1,17 +1,29 @@
+import sendMessage from "@/utils/sendMessage";
+import { Update } from "@/utils/types";
+
 export async function POST(request: Request) {
-    const req = await request.json()
-    const tgCall = await fetch(`https://api.telegram.org/bot${process.env.TG_BOT_KEY}/sendMessage`, {
-        method: "POST",
-        headers: {
-        "Content-type": "application/json"
-        },
-        body: JSON.stringify({
-            chat_id: process.env.MY_TG_ID,
-            text: req
-        }) 
-    })
+    const update = await request.json() as Update;
+    
+    if (!update.message.text || !update.message.chat) {
+        return new Response("OK");
+    };
 
-    console.log(await tgCall.json())
+    // this handles bot commands
+    if (update.message.entities && update.message.entities.filter(entity => entity.type === "bot_command").length) {
+        const command = update.message.entities.filter(entity => entity.type === "bot_command")[0];
+        const commandName = update.message.text.slice(command.offset + 1, command.offset + command.length)
 
-    return new Response(JSON.stringify({hey: "HEY"}))
+        switch (commandName) {
+            case "yo":
+                sendMessage({message: "yo yo", chat: update.message.chat})
+                break;
+        }
+    }
+
+    // this handles other messages in private chats
+    if (update.message.chat.type === "private") {
+        sendMessage({message: update.message.text, chat: update.message.chat})
+    }
+
+    return new Response("OK")
 }
