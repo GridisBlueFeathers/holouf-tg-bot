@@ -1,10 +1,13 @@
+import handleEventAnswer from "@/utils/handlers/handleEventAnswer";
+import handleEventNavigate from "@/utils/handlers/handleEventNavigate";
+import handleEventRegister from "@/utils/handlers/handleEventRegister";
 import sendMessage from "@/utils/sendMessage";
 import { Update } from "@/utils/types";
 
 export async function POST(request: Request) {
     const update = await request.json() as Update;
     
-    if (!update.message.text || !update.message.chat) {
+    if (!update.message.text || !update.message.chat || !update.message.from) {
         return new Response("OK");
     };
 
@@ -13,9 +16,19 @@ export async function POST(request: Request) {
         const command = update.message.entities.filter(entity => entity.type === "bot_command")[0];
         const commandName = update.message.text.slice(command.offset + 1, command.offset + command.length);
 
+        const restMessage = update.message.text.slice(command.offset + command.length + 1);
         switch (commandName) {
             case "yo":
-                await sendMessage({message: "yo yo", chat: update.message.chat});
+                await sendMessage({message: "yo yo", chatId: update.message.chat.id});
+                break;
+            case "register":
+                await handleEventRegister(update.message.from)
+                break;
+            case "answer":
+                await handleEventAnswer({ user: update.message.from, answer: restMessage });
+                break;
+            case "navigate":
+                await handleEventNavigate({ user: update.message.from, option: restMessage });
                 break;
         };
         return new Response("OK");
@@ -23,7 +36,7 @@ export async function POST(request: Request) {
 
     // this handles other messages in private chats
     if (update.message.chat.type === "private") {
-        await sendMessage({message: update.message.text, chat: update.message.chat});
+        await sendMessage({message: update.message.text, chatId: update.message.chat.id});
         return new Response("OK");
     };
 
