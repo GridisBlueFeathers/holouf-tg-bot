@@ -39,14 +39,14 @@ const eventMachine = createMachine<Context>({
             },
             {
                 name: "c 1-2",
-                message: `/naviagte q 1-3
-/navigate q 3-3`,
+                message: `/naviagte q 1-3 name
+/navigate q 3-3 name`,
                 active: false,
             },
             {
                 name: "c 2-2",
-                message: `/naviagte q 2-3
-/navigate q 3-3`,
+                message: `/naviagte q 2-3 name
+/navigate q 3-3 name`,
                 active: false,
             },
         ],

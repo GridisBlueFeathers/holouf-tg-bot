@@ -32,7 +32,7 @@ const handleEventNavigate = async ({user, option}: {user: User, option: string})
         }
         console.log(option);
         
-        const optionId = previousState.context.questions.filter(question => question.id === option.toLowerCase())[0].id
+        const optionId = previousState.context.questions.filter(question => question.name === option.toLowerCase())[0].id
         console.log(optionId)
 
         if (service.nextState({type: `/navigate ${optionId}`}).value === previousState.value) {
