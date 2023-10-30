@@ -3,6 +3,7 @@ import { User } from "../types";
 import { State, StateFrom, interpret } from "xstate";
 import sendMessage from "../sendMessage";
 import eventMachine from "../eventMachine";
+import sendPhoto from "../sendPhoto";
 
 const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) => {
     if (!user.username) {
@@ -28,7 +29,21 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
         
         if (nextState.hasTag("fin")) {
             await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
-            await sendMessage({message: "Congrats", chatId: user.id})
+            await sendPhoto({
+                message: `Вітаємо! Ви змогли дібратися до лігва безумного кролика! Для того, щоб продовжити гру та перейти на фінальний етап, напишіть їй особисто (повідомлення приймаються до 00:00).`,
+                chatId: user.id,
+                photoId: "AgACAgIAAxkBAAICd2VAMZOoa5_Oh5-CBtlOSoxI9UpIAALz0zEbQ4YBSjoFNBjT4FtaAQADAgADcwADMAQ"
+            })
+            return;
+
+        }
+
+        if (nextState.hasTag("trap")) {
+            const {name, message} = nextState.context.choices.filter(choice => choice.name === nextState.value)[0]
+
+            await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)});
+            await sendPhoto({message: `Золоті двері відкриваються, але за ними стоїть суцільна пітьма. Ви робите пару кроків вперед, і ту двері за вами різко та гучно зачиняються. Ви відчуваєте, як підлога уходить з-під ваших ніг, ви падаєте вниз, а навколо вас звучить садистський кролячий сміх...`, chatId: user.id, photoId: "AAMCAgADGQEAAgJ9ZUA3wFxXzVmVp0gLxVD7zMBg7pEAAts7AAJDhgFKMVA4BvJS6HcBAAdtAAMwBA"});
+            await sendMessage({message: `${name} ${message}`, chatId: user.id})
             return;
 
         }
