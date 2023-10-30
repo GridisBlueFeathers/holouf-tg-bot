@@ -446,7 +446,7 @@ const eventMachine = createMachine<Context>({
             },
         },
         "q 3-3": {
-            tags: ["question"],
+            tags: ["question", "trap"],
             on: {
                 "/answer q 3-3": {
                     actions: ((context) => {
