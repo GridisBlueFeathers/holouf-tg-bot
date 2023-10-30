@@ -5,16 +5,15 @@ import eventMachine from "../eventMachine";
 import { interpret } from "xstate";
 
 const sucessfulMessage = `
-You have been registered for an event
+ВИБІР 1
 
-Current questions
-/navigate oneOne
-/navigate oneTwo
-/navigate oneThree
-/navigate oneFour
+За дверима вас чекав темний коридор, освічений лише слабким мерехтінням факелів на стінах. Варто було вам лише зробити пару кроків у нього, як двері за вами голосно зачинилися. Вам було страшнувато, але ви впевнено покрокували вперед.
+
+Далі ви опинилися перед двома дверима. На лівих була намальована біла квіточка, на правих - блакитний черевичок. Яку ви відкриєте?
+
+/navigate квіточка
+/navigate черевичок
 `
-
-
 const handleEventRegister = async (user: User) => {
     try {
         const userDbState = await kv.hexists(`user:${user.id}`, "userState");
