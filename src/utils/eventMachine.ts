@@ -150,10 +150,10 @@ const eventMachine = createMachine<Context>({
         start: {
             tags: ["choice"],
             on: {
-                "/navigate 1-1": {
+                "/navigate q 1-1": {
                     target: "q 1-1",
                 },
-                "/navigate 2-1": {
+                "/navigate q 2-1": {
                     target: "q 2-1",
                 },
             },
@@ -221,10 +221,10 @@ const eventMachine = createMachine<Context>({
         "c 1-2": {
             tags: ["choice"],
             on: {
-                "/navigate 1-3": {
+                "/navigate q 1-3": {
                     target: "q 1-3",
                 },
-                "/navigate 3-3": {
+                "/navigate q 3-3": {
                     target: "q 3-3",
                 },
             },
