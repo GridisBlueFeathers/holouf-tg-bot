@@ -20,8 +20,6 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
         const service = interpret(eventMachine).start(previousState);
         console.log(previousState.value)
 
-        const nextStep = previousState.context.questions.filter(question => question.name === previousState.value)[0]
-
         if (service.nextState({type: `/answer ${previousState.value}`, answer: answer}).value === previousState.value) {
             return;
         }

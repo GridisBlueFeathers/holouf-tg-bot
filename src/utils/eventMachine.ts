@@ -213,7 +213,7 @@ const eventMachine = createMachine<Context>({
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
-                            (question) => question.name === "q 1-2"
+                            (question) => question.id === "q 1-2"
                         ),
                 },
             },
@@ -237,7 +237,7 @@ const eventMachine = createMachine<Context>({
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
-                            (question) => question.name === "q 1-3"
+                            (question) => question.id === "q 1-3"
                         ),
                 },
                 "/naviagte back": {
@@ -253,7 +253,7 @@ const eventMachine = createMachine<Context>({
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
-                            (question) => question.name === "q 1-4"
+                            (question) => question.id === "q 1-4"
                         ),
                 },
             },
@@ -286,7 +286,7 @@ const eventMachine = createMachine<Context>({
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
-                            (question) => question.name === "q 2-1"
+                            (question) => question.id === "q 2-1"
                         ),
                 },
             },
@@ -313,7 +313,7 @@ const eventMachine = createMachine<Context>({
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
-                            (question) => question.name === "q 2-2"
+                            (question) => question.id === "q 2-2"
                         ),
                 },
             },
@@ -336,7 +336,7 @@ const eventMachine = createMachine<Context>({
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
-                            (question) => question.name === "q 2-3"
+                            (question) => question.id === "q 2-3"
                         ),
                 },
                 "/naviagte back": {
@@ -352,7 +352,7 @@ const eventMachine = createMachine<Context>({
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
-                            (question) => question.name === "q 2-4"
+                            (question) => question.id === "q 2-4"
                         ),
                 },
             },
@@ -365,7 +365,7 @@ const eventMachine = createMachine<Context>({
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
-                            (question) => question.name === "q 3-3"
+                            (question) => question.id === "q 3-3"
                         ),
                 },
                 "/navigate back 1-2": {
@@ -384,7 +384,7 @@ const eventMachine = createMachine<Context>({
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
-                            (question) => question.name === "q 5"
+                            (question) => question.id === "q 5"
                         ),
                 },
             },
@@ -397,7 +397,7 @@ const eventMachine = createMachine<Context>({
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
-                            (question) => question.name === "q 6"
+                            (question) => question.id === "q 6"
                         ),
                 },
             },
