@@ -22,10 +22,10 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
         console.log(previousState.value)
         console.log(answer)
 
-        if (service.nextState({type: `/answer ${previousState.value}`, answer: answer}).value === previousState.value) {
+        if (service.nextState({type: `/answer ${previousState.value}`, answer: answer.toLowerCase()}).value === previousState.value) {
             return;
         }
-        const nextState = service.send({type: `/answer ${previousState.value}`, answer: answer});
+        const nextState = service.send({type: `/answer ${previousState.value}`, answer: answer.toLowerCase()});
         
         if (nextState.hasTag("fin")) {
             await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
@@ -39,30 +39,37 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
         }
 
         if (nextState.hasTag("trap")) {
-            const {name, message} = nextState.context.choices.filter(choice => choice.name === nextState.value)[0]
+            const {message} = nextState.context.choices.filter(choice => choice.name === nextState.value)[0]
 
             await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)});
             await sendPhoto({message: `Золоті двері відкриваються, але за ними стоїть суцільна пітьма. Ви робите пару кроків вперед, і ту двері за вами різко та гучно зачиняються. Ви відчуваєте, як підлога уходить з-під ваших ніг, ви падаєте вниз, а навколо вас звучить садистський кролячий сміх...`, chatId: user.id, photoId: "AAMCAgADGQEAAgJ9ZUA3wFxXzVmVp0gLxVD7zMBg7pEAAts7AAJDhgFKMVA4BvJS6HcBAAdtAAMwBA"});
-            await sendMessage({message: `${name} ${message}`, chatId: user.id})
+            await sendMessage({message: message, chatId: user.id})
             return;
 
         }
 
         if (nextState.hasTag("question")) {
 
-            const {name, body} = nextState.context.questions.filter(question => question.id === nextState.value)[0]
+            const {body, photoId} = nextState.context.questions.filter(question => question.id === nextState.value)[0]
 
             await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)});
-            await sendMessage({message: `${name} ${body}`, chatId: user.id});
+            if (photoId) {
+                await sendPhoto({
+                    message: body,
+                    chatId: user.id,
+                    photoId: photoId
+                })
+            }
+            await sendMessage({message: body, chatId: user.id});
             return;
         }
 
         
 
-        const {name, message} = nextState.context.choices.filter(choice => choice.name === nextState.value)[0];
+        const {message} = nextState.context.choices.filter(choice => choice.name === nextState.value)[0];
 
         await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
-        await sendMessage({message: `${name} ${message}`, chatId: user.id})
+        await sendMessage({message: message, chatId: user.id})
 
         return;
     } catch (e) {
