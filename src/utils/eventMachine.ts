@@ -20,6 +20,7 @@ interface Context {
 }
 
 const eventMachine = createMachine<Context>({
+    predictableActionArguments: true,
     id: "event",
     initial: "start",
     context: {
