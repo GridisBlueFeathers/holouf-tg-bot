@@ -20,12 +20,12 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
         const service = interpret(eventMachine).start(previousState);
         console.log(previousState.value)
 
-        const currentSplit = previousState.context.splits.filter(split => split.active)[0].name
+        const nextStep = previousState.context.questions.filter(question => question.name === previousState.value)[0]
 
-        if (service.nextState({type: currentSplit, answer: answer}).value === previousState.value) {
+        if (service.nextState({type: `/answer ${previousState.value}`, answer: answer}).value === previousState.value) {
             return;
         }
-        const nextState = service.send({type: currentSplit, answer: answer});
+        const nextState = service.send({type: `/answer ${previousState.value}`, answer: answer});
         
         if (nextState.hasTag("fin")) {
             await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
@@ -34,18 +34,21 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
 
         }
 
-        const {name, basicMessage} = nextState.context.splits.filter(split => split.name === nextState.value)[0];
+        if (nextState.hasTag("question")) {
 
-        const activeQuestions = nextState.context.questions.filter(question => question.split === name && question.active)
-        const baseMessage = `${name}
+            const {name, body} = nextState.context.questions.filter(question => question.name === nextState.value)[0]
 
-${basicMessage}
-Availible questions`;
+            await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)});
+            await sendMessage({message: `${name} ${body}`, chatId: user.id});
+            return;
+        }
+
         
-        const message = baseMessage.concat(...activeQuestions.map(question => `\n/navigate ${question.name}`))
+
+        const {name, message} = nextState.context.choices.filter(choice => choice.name === nextState.value)[0];
 
         await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
-        await sendMessage({message: message, chatId: user.id})
+        await sendMessage({message: `${name} ${message}`, chatId: user.id})
 
         return;
     } catch (e) {

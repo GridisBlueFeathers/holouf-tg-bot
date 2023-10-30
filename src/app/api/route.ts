@@ -6,6 +6,9 @@ import { Update } from "@/utils/types";
 
 const ALLOWED_USERS = [
     "@GridisBlueFeathers",
+    "@Toxinushka",
+    "@Glasiem",
+    "@smallhours"
 ];
 
 export async function POST(request: Request) {
@@ -39,8 +42,8 @@ export async function POST(request: Request) {
     };
 
     // this handles other messages in private chats
-    if (update.message.chat.type === "private") {
-        await sendMessage({message: update.message.text, chatId: update.message.chat.id});
+    if (update.message.chat.type === "private" && update.message.from.username && update.message.from.username === "@GridisBlueFeathers") {
+        await sendMessage({message: JSON.stringify(update), chatId: update.message.chat.id});
         return new Response("OK");
     };
 

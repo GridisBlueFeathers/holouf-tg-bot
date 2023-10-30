@@ -19,37 +19,32 @@ const handleEventNavigate = async ({user, option}: {user: User, option: string})
         const previousState = State.create(stateDefinition);
         const service = interpret(eventMachine).start(previousState);
 
-        if (service.nextState({type: option}).value === previousState.value) {
+        if (option === "back") {
+            const choiceName = previousState.context.choices.filter(choice => choice.active)[0].name;
+
+            const nextState = service.send({type: `/navigate ${choiceName}`});
+
+            const { name, message } = nextState.context.choices.filter(choice => choice.name === nextState.value)[0];
+
+            await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
+            await sendMessage({message: `${name} ${message}`, chatId: user.id})
+        }
+        
+        const optionId = previousState.context.questions.filter(question => question.name === option.toLowerCase())[0].id
+
+        if (service.nextState({type: `/navigate ${optionId}`}).value === previousState.value) {
             return;
         }
 
-        const nextState = service.send({type: option});
+        const nextState = service.send({type: `/navigate ${optionId}`});
 
-        if (nextState.hasTag("split")) {
-            const {name, basicMessage} = nextState.context.splits.filter(split => split.name === nextState.value)[0];
+        const {name, message} = nextState.context.choices.filter(choice => choice.name === nextState.value)[0];
 
-            const activeQuestions = nextState.context.questions.filter(question => question.split === name && question.active)
-            const baseMessage = `${name}
-
-${basicMessage}
-Availible questions`;
-            
-            const message = baseMessage.concat(...activeQuestions.map(question => `\n/navigate ${question.name}`))
-
-            await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
-            await sendMessage({message: message, chatId: user.id})
-
-            return;
-        };
         
-        const {name, body} = nextState.context.questions.filter(question => question.name === nextState.value)[0]
-        const message = `${name}
-${body}
 
-To go back enter
-/navigate goBack`
+        
         await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
-        await sendMessage({message: message, chatId: user.id})
+        await sendMessage({message: `${name} ${message}`, chatId: user.id})
         
     } catch (e) {
         console.log(e)

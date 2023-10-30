@@ -12,8 +12,7 @@ const sucessfulMessage = `
 Далі ви опинилися перед двома дверима. На лівих була намальована біла квіточка, на правих - блакитний черевичок. Яку ви відкриєте?
 
 /navigate квіточка
-/navigate черевичок
-`
+/navigate черевичок`
 const handleEventRegister = async (user: User) => {
     try {
         const userDbState = await kv.hexists(`user:${user.id}`, "userState");
