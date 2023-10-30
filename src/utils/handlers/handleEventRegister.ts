@@ -12,6 +12,7 @@ const sucessfulMessage = `Ви входите у темний коридор, о
 
 /navigate квіточка
 /navigate черевичок`
+
 const handleEventRegister = async (user: User) => {
     try {
         const userDbState = await kv.hexists(`user:${user.id}`, "userState");

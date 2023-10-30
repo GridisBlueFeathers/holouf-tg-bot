@@ -4,7 +4,6 @@ interface Choice {
     name: string;
     message: string;
     active: boolean;
-    photoId?: string;
 }
 
 interface Question {
@@ -72,7 +71,7 @@ const eventMachine = createMachine<Context>({
 -----
 
 /navigate back
-/answer 1A2B`,
+/answer 1A2B...`,
                 answer: "1d2b3a4c5e",
                 photoId: "AgACAgIAAxkBAAICdGVAK-Td5oy7CSfu5bdbHWNxTfILAALh0zEbQ4YBSrZ2EUrnl_e5AQADAgADcwADMAQ"
             },

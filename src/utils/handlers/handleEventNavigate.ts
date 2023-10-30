@@ -3,6 +3,7 @@ import { User } from "../types";
 import { State, StateFrom, interpret } from "xstate";
 import sendMessage from "../sendMessage";
 import eventMachine from "../eventMachine";
+import sendPhoto from "../sendPhoto";
 
 const handleEventNavigate = async ({user, option}: {user: User, option: string}) => {
     if (!user.username) {
@@ -24,16 +25,14 @@ const handleEventNavigate = async ({user, option}: {user: User, option: string})
 
             const nextState = service.send({type: `/navigate ${choiceName}`});
 
-            const { name, message } = nextState.context.choices.filter(choice => choice.name === nextState.value)[0];
+            const { message } = nextState.context.choices.filter(choice => choice.name === nextState.value)[0];
 
             await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
-            await sendMessage({message: `${name} ${message}`, chatId: user.id})
+            await sendMessage({message: message, chatId: user.id})
             return
         }
-        console.log(option);
         
         const optionId = previousState.context.questions.filter(question => question.name === option.toLowerCase())[0].id
-        console.log(optionId)
 
         if (service.nextState({type: `/navigate ${optionId}`}).value === previousState.value) {
             return;
@@ -41,10 +40,15 @@ const handleEventNavigate = async ({user, option}: {user: User, option: string})
 
         const nextState = service.send({type: `/navigate ${optionId}`});
 
-        const {name, body} = nextState.context.questions.filter(question => question.id === nextState.value)[0];
+        const {body, photoId} = nextState.context.questions.filter(question => question.id === nextState.value)[0];
 
         await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
-        await sendMessage({message: `${name} ${body}`, chatId: user.id})
+        if (photoId) {
+            await sendPhoto({message: body, chatId: user.id, photoId: photoId})
+            return;
+
+        }
+        await sendMessage({message: body, chatId: user.id})
         
     } catch (e) {
         console.log(e)
