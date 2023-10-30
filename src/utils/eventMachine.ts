@@ -185,8 +185,8 @@ const eventMachine = createMachine<Context>({
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
-                            (question) => question.name === "q 1-1"
-                        ),
+                            (question) => question.id === "q 1-1"
+                        )[0].answer,
                 },
             },
         },
@@ -214,7 +214,7 @@ const eventMachine = createMachine<Context>({
                         event.answer ===
                         context.questions.filter(
                             (question) => question.id === "q 1-2"
-                        ),
+                        )[0].answer,
                 },
             },
         },
@@ -238,7 +238,7 @@ const eventMachine = createMachine<Context>({
                         event.answer ===
                         context.questions.filter(
                             (question) => question.id === "q 1-3"
-                        ),
+                        )[0].answer,
                 },
                 "/naviagte back": {
                     target: "c 1-2",
@@ -254,7 +254,7 @@ const eventMachine = createMachine<Context>({
                         event.answer ===
                         context.questions.filter(
                             (question) => question.id === "q 1-4"
-                        ),
+                        )[0].answer,
                 },
             },
         },
@@ -287,7 +287,7 @@ const eventMachine = createMachine<Context>({
                         event.answer ===
                         context.questions.filter(
                             (question) => question.id === "q 2-1"
-                        ),
+                        )[0].answer,
                 },
             },
         },
@@ -314,7 +314,7 @@ const eventMachine = createMachine<Context>({
                         event.answer ===
                         context.questions.filter(
                             (question) => question.id === "q 2-2"
-                        ),
+                        )[0].answer,
                 },
             },
         },
@@ -337,7 +337,7 @@ const eventMachine = createMachine<Context>({
                         event.answer ===
                         context.questions.filter(
                             (question) => question.id === "q 2-3"
-                        ),
+                        )[0].answer,
                 },
                 "/naviagte back": {
                     target: "c 2-2",
@@ -353,7 +353,7 @@ const eventMachine = createMachine<Context>({
                         event.answer ===
                         context.questions.filter(
                             (question) => question.id === "q 2-4"
-                        ),
+                        )[0].answer,
                 },
             },
         },
@@ -366,7 +366,7 @@ const eventMachine = createMachine<Context>({
                         event.answer ===
                         context.questions.filter(
                             (question) => question.id === "q 3-3"
-                        ),
+                        )[0].answer,
                 },
                 "/navigate back 1-2": {
                     target: "c 1-2",
@@ -385,7 +385,7 @@ const eventMachine = createMachine<Context>({
                         event.answer ===
                         context.questions.filter(
                             (question) => question.id === "q 5"
-                        ),
+                        )[0].answer,
                 },
             },
         },
@@ -398,7 +398,7 @@ const eventMachine = createMachine<Context>({
                         event.answer ===
                         context.questions.filter(
                             (question) => question.id === "q 6"
-                        ),
+                        )[0].answer,
                 },
             },
         },

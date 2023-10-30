@@ -42,9 +42,6 @@ const handleEventNavigate = async ({user, option}: {user: User, option: string})
 
         const {name, body} = nextState.context.questions.filter(question => question.id === nextState.value)[0];
 
-        
-
-        
         await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
         await sendMessage({message: `${name} ${body}`, chatId: user.id})
         

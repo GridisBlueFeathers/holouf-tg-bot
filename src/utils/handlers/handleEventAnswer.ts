@@ -19,6 +19,7 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
         const previousState = State.create(stateDefinition);
         const service = interpret(eventMachine).start(previousState);
         console.log(previousState.value)
+        console.log(answer)
 
         if (service.nextState({type: `/answer ${previousState.value}`, answer: answer}).value === previousState.value) {
             return;
@@ -34,7 +35,7 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
 
         if (nextState.hasTag("question")) {
 
-            const {name, body} = nextState.context.questions.filter(question => question.name === nextState.value)[0]
+            const {name, body} = nextState.context.questions.filter(question => question.id === nextState.value)[0]
 
             await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)});
             await sendMessage({message: `${name} ${body}`, chatId: user.id});
