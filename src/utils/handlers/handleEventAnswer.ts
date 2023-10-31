@@ -19,8 +19,6 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
 
         const previousState = State.create(stateDefinition);
         const service = interpret(eventMachine).start(previousState);
-        console.log(previousState.value)
-        console.log(answer)
 
         if (service.nextState({type: `/answer ${previousState.value}`, answer: answer.toLowerCase()}).value === previousState.value) {
             return;
@@ -32,17 +30,22 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
             await sendPhoto({
                 message: `Вітаємо! Ви змогли дібратися до лігва безумного кролика! Для того, щоб продовжити гру та перейти на фінальний етап, напишіть їй особисто (повідомлення приймаються до 00:00).`,
                 chatId: user.id,
-                photoId: "AgACAgIAAxkBAAICd2VAMZOoa5_Oh5-CBtlOSoxI9UpIAALz0zEbQ4YBSjoFNBjT4FtaAQADAgADcwADMAQ"
+                photoId: "AgACAgIAAxkBAAIDgmVAZfQ49B_P9_BberKKVIKai8k6AALz0zEbQ4YBSjoFNBjT4FtaAQADAgADcwADMwQ"
             })
+            //await sendMessage({message: `user ${user.username}\nstage ${previousState.value}\nanswer ${answer}`, chatId})
             return;
 
         }
 
-        if (nextState.hasTag("trap")) {
+        if (previousState.hasTag("trap")) {
             const {message} = nextState.context.choices.filter(choice => choice.name === nextState.value)[0]
 
             await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)});
-            await sendPhoto({message: `Золоті двері відкриваються, але за ними стоїть суцільна пітьма. Ви робите пару кроків вперед, і ту двері за вами різко та гучно зачиняються. Ви відчуваєте, як підлога уходить з-під ваших ніг, ви падаєте вниз, а навколо вас звучить садистський кролячий сміх...`, chatId: user.id, photoId: "AAMCAgADGQEAAgJ9ZUA3wFxXzVmVp0gLxVD7zMBg7pEAAts7AAJDhgFKMVA4BvJS6HcBAAdtAAMwBA"});
+            await sendPhoto({
+                message: `Золоті двері відкриваються, але за ними стоїть суцільна пітьма. Ви робите пару кроків вперед, і ту двері за вами різко та гучно зачиняються. Ви відчуваєте, як підлога уходить з-під ваших ніг, ви падаєте вниз, а навколо вас звучить садистський кролячий сміх...`,
+                chatId: user.id,
+                photoId: "AgACAgIAAxkBAAIDPmVAUIA9dPmSrmw-LjuHIDP_YCI8AAIB1DEbQ4YBSkKE6L--Z8tiAQADAgADcwADMAQ"
+            });
             await sendMessage({message: message, chatId: user.id})
             return;
 
@@ -64,7 +67,19 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
             return;
         }
 
-        
+        if (nextState.hasTag("split")) {
+
+            const {basicMessage} = nextState.context.splits.filter(split => split.name === nextState.value)[0];
+
+            const activeQuestions = nextState.context.questions.filter(question => question.active)
+            const baseMessage = `${basicMessage}`;
+
+            const message = baseMessage.concat(...activeQuestions.map(question => `\n/navigate ${question.name}`))
+
+            await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
+            await sendMessage({message: message, chatId: user.id})
+            return;
+        }
 
         const {message} = nextState.context.choices.filter(choice => choice.name === nextState.value)[0];
 

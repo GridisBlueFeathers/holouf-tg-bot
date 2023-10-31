@@ -1,5 +1,11 @@
 import { createMachine, assign } from "xstate";
 
+interface Split {
+    name: string;
+    basicMessage: string;
+    count: number;
+}
+
 interface Choice {
     name: string;
     message: string;
@@ -12,9 +18,11 @@ interface Question {
     body: string;
     answer: string;
     photoId?: string;
+    active?: boolean;
 }
 
 interface Context {
+    splits: Split[];
     choices: Choice[];
     questions: Question[];
 }
@@ -24,6 +32,17 @@ const eventMachine = createMachine<Context>({
     id: "event",
     initial: "start",
     context: {
+        splits: [
+            {
+                name: "s 5",
+                basicMessage: `Ви опинилися у великому круглому залі з високою стелею. Перед вами знову закриті двері, на яких замок із трьома отворами. У кімнаті стоять пʼять статуй, стилізованих під Майнкрафт. Ви впізнаєте у них працівниць Усада Кенсецу. Перед кожною фігурою невеличка вітрина із кодовим замком на 4 цифри, а усередині - золотий ключ. Усі ключі однакові, тому ви робите висновок, що вам треба зібрати лише 3 із них. До якої із статуй ви підійдете?
+
+-----
+
+`,
+                count: 0
+            }
+        ],
         choices: [
             {
                 name: "start",
@@ -203,14 +222,66 @@ const eventMachine = createMachine<Context>({
 /navigate back
 /answer Name`,
                 answer: "luna",
-                photoId: "AAMCAgADGQEAAgJ6ZUAzoBQMifnc3NE-BjPd2s0wNVgAAqpCAAJ4NgABSvIJVOdnsdG_AQAHbQADMAQ"
+                photoId: "AgACAgIAAxkBAAIDAAFlQEd7Ej5G9sF2DBUVPgvhNZ7gLQAC-dMxG0OGAUqxTDKPhAIBVgEAAwIAA3MAAzAE"
             },
             {
-                name: "q 5 name",
-                id: "q 5",
-                body: `message 5
-/answer 5`,
-                answer: "5",
+                name: "kiara",
+                id: "q 5-1",
+                body: `Як відомо, фенікси вміють відроджуватися із попелу. Скільки разів я “починала спочатку”?
+
+-----
+
+/navigate back
+/answer 1234`,
+                answer: "0003",
+                active: true
+            },
+            {
+                name: "botan",
+                id: "q 5-2",
+                body: `Як відомо, я лише один раз випускала пісню дуетом не з Ватаме. Якого року вийшов оригінал цієї пісні?
+
+-----
+
+/navigate back
+/answer 1234`,
+                answer: "2008",
+                active: true
+            },
+            {
+                name: "pekora",
+                id: "q 5-3",
+                body: `Як відомо, мені подобається милуватися собою. Особливо якщо моє обличчя на грошових купюрах, пеко! Навіть якщо це муляж, який був мій номінал?
+
+-----
+
+/navigate back
+/answer 1234`,
+                answer: "0112",
+                active: true
+            },
+            {
+                name: "towa",
+                id: "q 5-4",
+                body: `Як відомо, я дуже люблю співати разом із друзями. Саме стільки гостей було на моїх міксах?
+-----
+
+/navigate back
+/answer 1234`,
+                answer: "0018",
+                active: true
+            },
+            {
+                name: "moona",
+                id: "q 5-5",
+                body: `Як відомо, я обожнюю співати та грати в ігри. Саме в той день я поставила свій особистий рекорд: не всі частини були наживо, але все одно, сто є сто.
+
+-----
+
+/nabigate back
+/answer 1234`,
+                answer: "2203",
+                active: true
             },
             {
                 name: "q 6 name",
@@ -327,7 +398,7 @@ const eventMachine = createMachine<Context>({
                             (question) => question.id === "q 1-3"
                         )[0].answer,
                 },
-                "/naviagte back": {
+                "/navigate c 1-2": {
                     target: "c 1-2",
                 },
             },
@@ -336,7 +407,7 @@ const eventMachine = createMachine<Context>({
             tags: ["question"],
             on: {
                 "/answer q 1-4": {
-                    target: "q 5",
+                    target: "s 5",
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
@@ -407,10 +478,10 @@ const eventMachine = createMachine<Context>({
         },
         "c 2-2": {
             on: {
-                "/navigate 2-3": {
+                "/navigate q 2-3": {
                     target: "q 2-3",
                 },
-                "/navigate 3-3": {
+                "/navigate q 3-3": {
                     target: "q 3-3",
                 },
             },
@@ -426,7 +497,7 @@ const eventMachine = createMachine<Context>({
                             (question) => question.id === "q 2-3"
                         )[0].answer,
                 },
-                "/naviagte back": {
+                "/navigate c 2-2": {
                     target: "c 2-2",
                 },
             },
@@ -435,7 +506,7 @@ const eventMachine = createMachine<Context>({
             tags: ["question"],
             on: {
                 "/answer q 2-4": {
-                    target: "q 5",
+                    target: "s 5",
                     cond: (context, event) =>
                         event.answer ===
                         context.questions.filter(
@@ -448,11 +519,11 @@ const eventMachine = createMachine<Context>({
             tags: ["question", "trap"],
             on: {
                 "/answer q 3-3": {
-                    actions: ((context) => {
+                    actions: assign((context) => {
                         return {
                             ...context,
                             choices: context.choices.map(choice => {
-                                if (choice.name === "c 1-2" || choice.name === "c 2-2") {
+                                if ((choice.name === "c 1-2") || (choice.name === "c 2-2")) {
                                     return {
                                         ...choice,
                                         active: false
@@ -477,26 +548,227 @@ const eventMachine = createMachine<Context>({
                             (question) => question.id === "q 3-3"
                         )[0].answer,
                 },
-                "/navigate back 1-2": {
+                "/navigate c 1-2": {
                     target: "c 1-2",
                 },
-                "/navigate back 2-2": {
+                "/navigate c 2-2": {
                     target: "c 2-2",
                 },
             },
         },
-        "q 5": {
-            tags: ["question"],
+        "s 5": {
+            tags: ["split"],
             on: {
-                "/answer q 5": {
-                    target: "q 6",
-                    cond: (context, event) =>
-                        event.answer ===
-                        context.questions.filter(
-                            (question) => question.id === "q 5"
-                        )[0].answer,
+                "/navigate q 5-1": {
+                    target: "q 5-1",
+                    cond: (context) => context.questions.filter(question => question.id === "q 5-1")[0].active === true
+                },
+                "/navigate q 5-2": {
+                    target: "q 5-2",
+                    cond: (context) => context.questions.filter(question => question.id === "q 5-2")[0].active === true
+                },
+                "/navigate q 5-3": {
+                    target: "q 5-3",
+                    cond: (context) => context.questions.filter(question => question.id === "q 5-3")[0].active === true
+                },
+                "/navigate q 5-4": {
+                    target: "q 5-4",
+                    cond: (context) => context.questions.filter(question => question.id === "q 5-4")[0].active === true
+                },
+                "/navigate q 5-5": {
+                    target: "q 5-5",
+                    cond: (context) => context.questions.filter(question => question.id === "q 5-5")[0].active === true
                 },
             },
+            always: {
+                target: "q 6",
+                cond: (context) => context.splits.filter(split => split.name === "s 5")[0].count === 3
+            }
+        },
+        "q 5-1": {
+            tags: ["splitQuestion"],
+            on: {
+                "/answer q 5-1": {
+                    target: "s 5",
+                    cond: (context, event) => event.answer === context.questions.filter(question => question.id === "q 5-1")[0].answer,
+                    actions: assign((context) => {
+                        return {
+                            ...context,
+                            splits: context.splits.map(split => {
+                                if (split.name === "s 5") {
+                                    return {
+                                        ...split,
+                                        count: split.count + 1
+                                    }
+                                }
+
+                                return split
+                            }),
+                            questions: context.questions.map(question => {
+                                if (question.id === "q 5-1") {
+                                    return {
+                                        ...question,
+                                        active: false,
+                                    }
+                                }
+
+                                return question;
+                            })
+                        }
+                    })
+                },
+                "/navigate s 5": {
+                    target: "s 5"
+                }
+            }
+        },
+        "q 5-2": {
+            tags: ["splitQuestion"],
+            on: {
+                "/answer q 5-2": {
+                    target: "s 5",
+                    cond: (context, event) => event.answer === context.questions.filter(question => question.id === "q 5-2")[0].answer,
+                    actions: assign((context) => {
+                        return {
+                            ...context,
+                            splits: context.splits.map(split => {
+                                if (split.name === "s 5") {
+                                    return {
+                                        ...split,
+                                        count: split.count + 1
+                                    }
+                                }
+
+                                return split
+                            }),
+                            questions: context.questions.map(question => {
+                                if (question.id === "q 5-2") {
+                                    return {
+                                        ...question,
+                                        active: false,
+                                    }
+                                }
+
+                                return question;
+                            })
+                        }
+                    })
+                },
+                "/navigate s 5": {
+                    target: "s 5"
+                }
+            }
+        },
+        "q 5-3": {
+            tags: ["splitQuestion"],
+            on: {
+                "/answer q 5-3": {
+                    target: "s 5",
+                    cond: (context, event) => event.answer === context.questions.filter(question => question.id === "q 5-3")[0].answer,
+                    actions: assign((context) => {
+                        return {
+                            ...context,
+                            splits: context.splits.map(split => {
+                                if (split.name === "s 5") {
+                                    return {
+                                        ...split,
+                                        count: split.count + 1
+                                    }
+                                }
+
+                                return split
+                            }),
+                            questions: context.questions.map(question => {
+                                if (question.id === "q 5-3") {
+                                    return {
+                                        ...question,
+                                        active: false,
+                                    }
+                                }
+
+                                return question;
+                            })
+                        }
+                    })
+                },
+                "/navigate s 5": {
+                    target: "s 5"
+                }
+            }
+        },
+        "q 5-4": {
+            tags: ["splitQuestion"],
+            on: {
+                "/answer q 5-4": {
+                    target: "s 5",
+                    cond: (context, event) => event.answer === context.questions.filter(question => question.id === "q 5-4")[0].answer,
+                    actions: assign((context) => {
+                        return {
+                            ...context,
+                            splits: context.splits.map(split => {
+                                if (split.name === "s 5") {
+                                    return {
+                                        ...split,
+                                        count: split.count + 1
+                                    }
+                                }
+
+                                return split
+                            }),
+                            questions: context.questions.map(question => {
+                                if (question.id === "q 5-4") {
+                                    return {
+                                        ...question,
+                                        active: false,
+                                    }
+                                }
+
+                                return question;
+                            })
+                        }
+                    })
+                },
+                "/navigate s 5": {
+                    target: "s 5"
+                }
+            }
+        },
+        "q 5-5": {
+            tags: ["splitQuestion"],
+            on: {
+                "/answer q 5-5": {
+                    target: "s 5",
+                    cond: (context, event) => event.answer === context.questions.filter(question => question.id === "q 5-5")[0].answer,
+                    actions: assign((context) => {
+                        return {
+                            ...context,
+                            splits: context.splits.map(split => {
+                                if (split.name === "s 5") {
+                                    return {
+                                        ...split,
+                                        count: split.count + 1
+                                    }
+                                }
+
+                                return split
+                            }),
+                            questions: context.questions.map(question => {
+                                if (question.id === "q 5-5") {
+                                    return {
+                                        ...question,
+                                        active: false,
+                                    }
+                                }
+
+                                return question;
+                            })
+                        }
+                    })
+                },
+                "/navigate s 5": {
+                    target: "s 5"
+                }
+            }
         },
         "q 6": {
             tags: ["question"],

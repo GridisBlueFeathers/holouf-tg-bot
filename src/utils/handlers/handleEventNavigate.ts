@@ -20,6 +20,21 @@ const handleEventNavigate = async ({user, option}: {user: User, option: string})
         const previousState = State.create(stateDefinition);
         const service = interpret(eventMachine).start(previousState);
 
+        if (option === "back" && previousState.hasTag("splitQuestion")) {
+            
+            const {basicMessage} = previousState.context.splits.filter(split => split.name === "s 5")[0];
+
+            const activeQuestions = previousState.context.questions.filter(question => question.active)
+            const baseMessage = `${basicMessage}`;
+
+            const message = baseMessage.concat(...activeQuestions.map(question => `\n/navigate ${question.name}`))
+
+            const nextState = service.send({type: `/navigate s 5`})
+            await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
+            await sendMessage({message: message, chatId: user.id})
+            return;
+        }
+
         if (option === "back") {
             const choiceName = previousState.context.choices.filter(choice => choice.active)[0].name;
 
