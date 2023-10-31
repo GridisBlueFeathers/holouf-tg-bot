@@ -50,5 +50,11 @@ export async function POST(request: Request) {
         return new Response("OK");
     };
 
+    if (update.message.from.username && update.message.from.username === "GridisBlueFeathers") {
+        await sendPhoto({message: JSON.stringify(update), chatId: update.message.chat.id, photoId: "AgACAgIAAxkBAAICbGVAJxsdxMubLK19w5smoOM5sQG0AAJm0jEb7wgAAUqXoR-aoeAloAEAAwIAA3MAAzAE"})
+
+        return new Response("OK");
+    };
+
     return new Response("OK");
 };
