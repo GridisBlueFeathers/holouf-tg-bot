@@ -21,6 +21,7 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
         const service = interpret(eventMachine).start(previousState);
 
         if (service.nextState({type: `/answer ${previousState.value}`, answer: answer.toLowerCase()}).value === previousState.value) {
+            await sendMessage({message: `user ${user.username}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
             return;
         }
         const nextState = service.send({type: `/answer ${previousState.value}`, answer: answer.toLowerCase()});
@@ -42,7 +43,7 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
 
             await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)});
             await sendPhoto({
-                message: `Золоті двері відкриваються, але за ними стоїть суцільна пітьма. Ви робите пару кроків вперед, і ту двері за вами різко та гучно зачиняються. Ви відчуваєте, як підлога уходить з-під ваших ніг, ви падаєте вниз, а навколо вас звучить садистський кролячий сміх...`,
+                message: `Золоті двері відкриваються, але за ними стоїть суцільна пітьма. Ви робите пару кроків вперед, і тут двері за вами різко та гучно зачиняються. Ви відчуваєте, як підлога уходить з-під ваших ніг, ви падаєте вниз, а навколо вас звучить садистський кролячий сміх...`,
                 chatId: user.id,
                 photoId: "AgACAgIAAxkBAAIDPmVAUIA9dPmSrmw-LjuHIDP_YCI8AAIB1DEbQ4YBSkKE6L--Z8tiAQADAgADcwADMAQ"
             });

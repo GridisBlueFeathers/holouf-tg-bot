@@ -278,7 +278,7 @@ const eventMachine = createMachine<Context>({
 
 -----
 
-/nabigate back
+/navigate back
 /answer 1234`,
                 answer: "2203",
                 active: true
