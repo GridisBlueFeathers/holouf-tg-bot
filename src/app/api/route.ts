@@ -50,11 +50,12 @@ export async function POST(request: Request) {
         return new Response("OK");
     };
 
-    if (update.message.from.username && update.message.from.username === "GridisBlueFeathers") {
-        await sendPhoto({message: JSON.stringify(update), chatId: Number(process.env.MY_TG_ID), photoId: "AgACAgIAAxkBAAICbGVAJxsdxMubLK19w5smoOM5sQG0AAJm0jEb7wgAAUqXoR-aoeAloAEAAwIAA3MAAzAE"})
+    //use to get within walls of a group
+    //if (update.message.from.username && update.message.from.username === "GridisBlueFeathers") {
+    //    await sendPhoto({message: JSON.stringify(update), chatId: Number(process.env.MY_TG_ID), photoId: "AgACAgIAAxkBAAICbGVAJxsdxMubLK19w5smoOM5sQG0AAJm0jEb7wgAAUqXoR-aoeAloAEAAwIAA3MAAzAE"})
 
-        return new Response("OK");
-    };
+    //    return new Response("OK");
+    //};
 
     return new Response("OK");
 };
