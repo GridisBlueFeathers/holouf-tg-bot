@@ -33,7 +33,7 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
                 chatId: user.id,
                 photoId: "AgACAgIAAxkBAAIDgmVAZfQ49B_P9_BberKKVIKai8k6AALz0zEbQ4YBSjoFNBjT4FtaAQADAgADcwADMwQ"
             })
-            await sendMessage({message: `user ${user.username}\nuser id ${user.id}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
+            await sendMessage({message: `user @${user.username}\nuser id ${user.id}\nstage ${previousState.value}\nanswer ${answer}\nuser passed final question`, chatId: Number(process.env.EVENT_CHAT_ID)})
             return;
 
         }
