@@ -21,7 +21,7 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
         const service = interpret(eventMachine).start(previousState);
 
         if (service.nextState({type: `/answer ${previousState.value}`, answer: answer.toLowerCase()}).value === previousState.value) {
-            await sendMessage({message: `user ${user.username}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
+            await sendMessage({message: `user ${user.username}\nuser id ${user.id}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
             return;
         }
         const nextState = service.send({type: `/answer ${previousState.value}`, answer: answer.toLowerCase()});
@@ -33,7 +33,7 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
                 chatId: user.id,
                 photoId: "AgACAgIAAxkBAAIDgmVAZfQ49B_P9_BberKKVIKai8k6AALz0zEbQ4YBSjoFNBjT4FtaAQADAgADcwADMwQ"
             })
-            await sendMessage({message: `user ${user.username}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
+            await sendMessage({message: `user ${user.username}\nuser id ${user.id}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
             return;
 
         }
@@ -48,7 +48,7 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
                 photoId: "AgACAgIAAxkBAAIDPmVAUIA9dPmSrmw-LjuHIDP_YCI8AAIB1DEbQ4YBSkKE6L--Z8tiAQADAgADcwADMAQ"
             });
             await sendMessage({message: message, chatId: user.id})
-            await sendMessage({message: `user ${user.username}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
+            await sendMessage({message: `user ${user.username}\nuser id ${user.id}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
             return;
 
         }
@@ -66,7 +66,7 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
                 })
             }
             await sendMessage({message: body, chatId: user.id});
-            await sendMessage({message: `user ${user.username}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
+            await sendMessage({message: `user ${user.username}\nuser id ${user.id}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
             return;
         }
 
@@ -81,7 +81,7 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
 
             await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
             await sendMessage({message: message, chatId: user.id})
-            await sendMessage({message: `user ${user.username}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
+            await sendMessage({message: `user ${user.username}\nuser id ${user.id}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
             return;
         }
 
@@ -89,7 +89,7 @@ const handleEventAnswer = async ({user, answer}: {user: User, answer: string}) =
 
         await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
         await sendMessage({message: message, chatId: user.id})
-        await sendMessage({message: `user ${user.username}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
+        await sendMessage({message: `user ${user.username}\nuser id ${user.id}\nstage ${previousState.value}\nanswer ${answer}`, chatId: Number(process.env.EVENT_CHAT_ID)})
 
         return;
     } catch (e) {
