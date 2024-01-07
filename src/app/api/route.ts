@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     };*/
 
     // this handles other messages in private chats
-    if (update.message.chat.type === "private" && update.message.from.username && update.message.from.username === "GridisBlueFeathers") {
+    if (update.message.chat.type === "private" /*&& update.message.from.username && update.message.from.username === "GridisBlueFeathers"*/) {
         await sendMessage({message: JSON.stringify(update), chatId: update.message.chat.id});
         await sendPhoto({message: "yo", chatId: update.message.chat.id, photoId: "AgACAgIAAxkBAAICbGVAJxsdxMubLK19w5smoOM5sQG0AAJm0jEb7wgAAUqXoR-aoeAloAEAAwIAA3MAAzAE"})
 
