@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     };
 
     // this handles bot commands in private chats
-    if (update.message.chat.type === "private" && update.message.from.username && update.message.entities && update.message.entities.filter(entity => entity.type === "bot_command").length) {
+/*    if (update.message.chat.type === "private" && update.message.from.username && update.message.entities && update.message.entities.filter(entity => entity.type === "bot_command").length) {
         const command = update.message.entities.filter(entity => entity.type === "bot_command")[0];
         const commandName = update.message.text.slice(command.offset + 1, command.offset + command.length);
 
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
                 break;
         };
         return new Response("OK");
-    };
+    };*/
 
     // this handles other messages in private chats
     if (update.message.chat.type === "private" && update.message.from.username && update.message.from.username === "GridisBlueFeathers") {
