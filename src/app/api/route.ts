@@ -15,7 +15,7 @@ const ALLOWED_USERS = [
 export async function POST(request: Request) {
     const update = await request.json() as Update;
     
-    if (!update.message.text || !update.message.chat || !update.message.from) {
+    if (!update.message.chat || !update.message.from) {
         return new Response("OK");
     };
 
