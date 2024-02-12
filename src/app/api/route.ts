@@ -28,9 +28,12 @@ export async function POST(request: Request) {
         //const restMessage = update.message.text.slice(command.offset + command.length + 1);
         switch (commandName) {
             case "yo":
-                await sendMessage({message: "yo yo", chatId: update.message.chat.id});
+                await sendMessage({message: {
+					text: "yo yo",
+					chat_id: update.message.chat.id,
+				}});
                 break;
-            case "survey":
+            case "apply":
                 await handleSurvey({chatId: update.message.chat.id});
 				break;
 			// commenting for now, until handle events programmatically
@@ -57,7 +60,12 @@ export async function POST(request: Request) {
 
     //use to get within walls of a group
     if (update.message.from.username && update.message.from.username === "GridisBlueFeathers") {
-        await sendPhoto({message: JSON.stringify(update), chatId: Number(process.env.MY_TG_ID), photoId: "AgACAgIAAxkBAAICbGVAJxsdxMubLK19w5smoOM5sQG0AAJm0jEb7wgAAUqXoR-aoeAloAEAAwIAA3MAAzAE"})
+        //await sendPhoto({message: JSON.stringify(update), chatId: Number(process.env.MY_TG_ID), photoId: "AgACAgIAAxkBAAICbGVAJxsdxMubLK19w5smoOM5sQG0AAJm0jEb7wgAAUqXoR-aoeAloAEAAwIAA3MAAzAE"})
+        await sendPhoto({photoMessage: {
+			chat_id: Number(process.env.MY_TG_ID),
+			photo: "https://i.ytimg.com/vi/zm4cDVt_U5g/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLARYT8lls6UcKr8SCWffpGbHiCcZQ",
+			caption: JSON.stringify(update)
+		}})
 
         return new Response("OK");
     };

@@ -1,18 +1,30 @@
-export type Update = {
+export interface Update {
     update_id: number;
-    message: Message;
+    message: UserMessage;
 }
 
-export type Message = {
+export interface BotMessage {
+    text: string;
+    chat_id: number | string;
+    entities?: MessageEntity[];
+	link_preview_options?: LinkPreviewOptions;
+}
+
+export interface PhotoBotMessage extends Omit<BotMessage, "text" | "entities" | "link_preview_options"> {
+	photo: string;
+	caption_entities?: MessageEntity[];
+	caption?: string;
+}
+
+export interface UserMessage extends Omit<BotMessage, "chat_id" | "text"> {
+	chat: Chat;
     message_id: number;
     date: number;
-    text?: string;
     from?: User;
-    chat?: Chat;
-    entities?: MessageEntity[];
+	text?: string;
 }
 
-export type User = {
+interface User {
     id: number;
     id_bot: boolean;
     first_name: string;
@@ -20,7 +32,7 @@ export type User = {
     username?: string;
 }
 
-export type Chat = {
+interface Chat {
     id: number;
     type: "private" | "group" | "supergroup" | "channel";
     title?: string;
@@ -29,10 +41,18 @@ export type Chat = {
     last_name?: string;
 }
 
-export type MessageEntity = {
-    type: "mention" | "hashtag" | "bot_command" | "cashtag" | "url" | "email" | "phone_number";
+interface MessageEntity {
+    type: "mention" | "hashtag" | "bot_command" | "cashtag" | "url" | "email" | "phone_number" | "text_link";
     offset: number;
     length: number;
     url?: string;
     user?: User;
+}
+
+interface LinkPreviewOptions {
+	is_disabled?: boolean;
+	url?: string;
+	prefer_smaller_media?: boolean;
+	prefer_large_media?: boolean;
+	show_above_text?: boolean;
 }
