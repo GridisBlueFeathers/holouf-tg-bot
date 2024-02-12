@@ -13,7 +13,12 @@ const handleEventNavigate = async ({user, option}: {user: User, option: string})
     try {
         const stateDefinition = await kv.hget(`user:${user.id}`, "userState") as StateFrom<typeof eventMachine>;
         if (!stateDefinition) {
-            await sendMessage({message: "You are not registered yet", chatId: user.id});
+			await sendMessage({
+				message: {
+					text: "Ви ще не зареєстровані на участь в евенті",
+					chat_id: user.id,
+				}
+			});
             return;
         };
 
@@ -21,17 +26,21 @@ const handleEventNavigate = async ({user, option}: {user: User, option: string})
         const service = interpret(eventMachine).start(previousState);
 
         if (option === "back" && previousState.hasTag("splitQuestion")) {
-            
-            const {basicMessage} = previousState.context.splits.filter(split => split.name === "s 5")[0];
+            const { basicMessage } = previousState.context.splits.filter(split => split.name === "s 5")[0];
 
-            const activeQuestions = previousState.context.questions.filter(question => question.active)
+            const activeQuestions = previousState.context.questions.filter(question => question.active);
             const baseMessage = `${basicMessage}`;
 
-            const message = baseMessage.concat(...activeQuestions.map(question => `\n/navigate ${question.name}`))
+            const message = baseMessage.concat(...activeQuestions.map(question => `\n/navigate ${question.name}`));
 
-            const nextState = service.send({type: `/navigate s 5`})
-            await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
-            await sendMessage({message: message, chatId: user.id})
+            const nextState = service.send({type: `/navigate s 5`});
+            await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)});
+			await sendMessage({
+				message: {
+					chat_id: user.id,
+					text: message,
+				}
+			});
             return;
         }
 
@@ -43,7 +52,12 @@ const handleEventNavigate = async ({user, option}: {user: User, option: string})
             const { message } = nextState.context.choices.filter(choice => choice.name === nextState.value)[0];
 
             await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
-            await sendMessage({message: message, chatId: user.id})
+			await sendMessage({
+				message: {
+					chat_id: user.id,
+					text: message,
+				}
+			})
             return
         }
         
@@ -59,11 +73,22 @@ const handleEventNavigate = async ({user, option}: {user: User, option: string})
 
         await kv.hset(`user:${user.id}`, {userState: JSON.stringify(nextState)})
         if (photoId) {
-            await sendPhoto({message: body, chatId: user.id, photoId: photoId})
+			await sendPhoto({
+				photoMessage: {
+					chat_id: user.id,
+					photo: photoId,
+					caption: body,
+				}
+			})
             return;
 
         }
-        await sendMessage({message: body, chatId: user.id})
+		await sendMessage({
+			message: {
+				chat_id: user.id,
+				text: body,
+			}
+		})
         
     } catch (e) {
         console.log(e)

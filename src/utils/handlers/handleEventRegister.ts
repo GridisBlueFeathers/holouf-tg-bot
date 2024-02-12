@@ -17,7 +17,12 @@ const handleEventRegister = async (user: User) => {
     try {
         const userDbState = await kv.hexists(`user:${user.id}`, "userState");
         if (userDbState) {
-            await sendMessage({message: "You are already registered for an event", chatId: user.id});
+			await sendMessage({
+				message: {
+					text: "Ви вже зареєстровані на участь в евенті",
+					chat_id: user.id,
+				}
+			});
             return;
         }
         if (user.username) {
@@ -25,7 +30,12 @@ const handleEventRegister = async (user: User) => {
             const startingState = interpret(eventMachine).getSnapshot();
 
             await kv.hset(`user:${user.id}`, {userTag: user.username, userState: JSON.stringify(startingState)});
-            await sendMessage({message: sucessfulMessage, chatId: user.id});
+			await sendMessage({
+				message: {
+					text: sucessfulMessage,
+					chat_id: user.id,
+				}
+			})
         };
     } catch (e) {
         console.log(e);

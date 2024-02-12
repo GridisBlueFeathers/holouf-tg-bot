@@ -24,7 +24,7 @@ export interface UserMessage extends Omit<BotMessage, "chat_id" | "text"> {
 	text?: string;
 }
 
-interface User {
+export interface User {
     id: number;
     id_bot: boolean;
     first_name: string;
