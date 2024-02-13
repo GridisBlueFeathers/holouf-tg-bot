@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
         //const restMessage = update.message.text.slice(command.offset + command.length + 1);
 		switch(commandName) {
 			case "yo":
-				await sendMessage({message: {
+				sendMessage({message: {
 					text: "da yo",
 					chat_id: update.message.chat.id,
 				}});
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
 			case "private":
 				switch (commandName) {
 					case "apply":
-						await handleSurvey({chatId: update.message.chat.id});
+						handleSurvey({chatId: update.message.chat.id});
 						break;
 				}			
 				break;
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     //use to get within walls of a group
     if (update.message.from.username && update.message.from.username === "GridisBlueFeathers") {
         //await sendPhoto({message: JSON.stringify(update), chatId: Number(process.env.MY_TG_ID), photoId: "AgACAgIAAxkBAAICbGVAJxsdxMubLK19w5smoOM5sQG0AAJm0jEb7wgAAUqXoR-aoeAloAEAAwIAA3MAAzAE"})
-        await sendPhoto({photoMessage: {
+        sendPhoto({photoMessage: {
 			chat_id: Number(process.env.MY_TG_ID),
 			photo: "https://i.ytimg.com/vi/zm4cDVt_U5g/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLARYT8lls6UcKr8SCWffpGbHiCcZQ",
 			caption: JSON.stringify(update)

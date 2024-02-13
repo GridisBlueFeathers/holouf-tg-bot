@@ -25,16 +25,16 @@ const handleGetForm = async ({update}: {update: Update}) => {
 		const userFields = await kv.hgetall(`mem:${userTag}`);
 
 		if (!userFields) {
-			await sendMessage({
+			sendMessage({
 				message: {
+					chat_id: update.message.chat.id,
 					text: "Нема члена чату з таким юзернеймом",
-					chat_id: update.message.chat.id
 				}
 			});
 			return ;
 		}
 
-		await sendMessage({
+		sendMessage({
 			message: {
 				chat_id: update.message.chat.id,
 				text: `Анкета користувача @${userTag}

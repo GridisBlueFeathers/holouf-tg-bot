@@ -1,18 +1,11 @@
 import { Update } from "@/utils/types";
-import { kv } from "@vercel/kv";
 import handleGetForm from "./handleGetForm";
 
 const handleSupergroupCommand = async ({ update }: { update: Update }) => {
 	try {
-		let allowedGroups;
-		const allowedGroupsStr = await kv.hget<string | null>("config", "allowedGroups");
-		if (allowedGroupsStr) {
-			allowedGroups = allowedGroupsStr
-				.split(" ")
-				.map(Number)
-		}
-		if (!allowedGroups
-			|| !allowedGroups.some(group => group === update.message.chat.id)
+		if (!(update.message.chat.id === Number(process.env.ADMIN_CHAT_ID)
+			|| update.message.chat.id === Number(process.env.MAIN_CHAT_ID)
+			|| update.message.chat.id === Number(process.env.DEV_CHAT_ID))
 			|| !update.message.entities
 			|| !update.message.text) {
 			return ;
@@ -22,8 +15,9 @@ const handleSupergroupCommand = async ({ update }: { update: Update }) => {
         const commandName = update.message.text.slice(commandEntity.offset + 1, commandEntity.offset + commandEntity.length);
 
 		switch (commandName) {
+			case "getform@hololiveuf_bot":
 			case "getform":
-				await handleGetForm({ update: update });
+				handleGetForm({ update: update });
 				break;
 		}
 	} catch (err) {
