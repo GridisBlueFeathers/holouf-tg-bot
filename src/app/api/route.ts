@@ -40,14 +40,14 @@ export async function POST(request: NextRequest) {
 		switch (update.message.chat.type) {
 			case "supergroup":
 				await handleSupergroupCommand({update: update});
-				break;
+				return new Response("OK");
 			case "private":
 				switch (commandName) {
 					case "apply":
 						await handleSurvey({chatId: update.message.chat.id});
-						break;
+						return new Response("OK");
 				}			
-				break;
+				return new Response("OK");
 		}
 
 		return new Response("OK");

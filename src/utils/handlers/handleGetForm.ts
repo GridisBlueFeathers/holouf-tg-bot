@@ -54,6 +54,8 @@ ${userFields.contentType}
 ${!!userFields.freeSpace ? `7. Про себе\n${userFields.freeSpace}` : ""}`
 			}
 		});
+
+		return ;
 	} catch (err) {
 		console.log(err);
 	}

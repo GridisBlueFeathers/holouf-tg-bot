@@ -17,8 +17,8 @@ const handleSupergroupCommand = async ({ update }: { update: Update }) => {
 		switch (commandName) {
 			case "getform@hololiveuf_bot":
 			case "getform":
-				handleGetForm({ update: update });
-				break;
+				await handleGetForm({ update: update });
+				return ;
 		}
 	} catch (err) {
 		console.log(err);
