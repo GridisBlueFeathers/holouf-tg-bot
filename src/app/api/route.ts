@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
         //const restMessage = update.message.text.slice(command.offset + command.length + 1);
 		switch(commandName) {
 			case "yo":
-				sendMessage({message: {
+				await sendMessage({message: {
 					text: "da yo",
 					chat_id: update.message.chat.id,
 				}});
@@ -39,12 +39,12 @@ export async function POST(request: NextRequest) {
 
 		switch (update.message.chat.type) {
 			case "supergroup":
-				handleSupergroupCommand({update: update});
+				await handleSupergroupCommand({update: update});
 				break;
 			case "private":
 				switch (commandName) {
 					case "apply":
-						handleSurvey({chatId: update.message.chat.id});
+						await handleSurvey({chatId: update.message.chat.id});
 						break;
 				}			
 				break;
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     //use to get within walls of a group
     if (update.message.from.username && update.message.from.username === "GridisBlueFeathers") {
         //await sendPhoto({message: JSON.stringify(update), chatId: Number(process.env.MY_TG_ID), photoId: "AgACAgIAAxkBAAICbGVAJxsdxMubLK19w5smoOM5sQG0AAJm0jEb7wgAAUqXoR-aoeAloAEAAwIAA3MAAzAE"})
-        sendPhoto({photoMessage: {
+        await sendPhoto({photoMessage: {
 			chat_id: Number(process.env.MY_TG_ID),
 			photo: "https://i.ytimg.com/vi/zm4cDVt_U5g/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLARYT8lls6UcKr8SCWffpGbHiCcZQ",
 			caption: JSON.stringify(update)
