@@ -34,7 +34,7 @@ const handleGetForm = async ({update}: {update: Update}) => {
 			return ;
 		}
 
-		sendMessage({
+		await sendMessage({
 			message: {
 				chat_id: update.message.chat.id,
 				text: `Анкета користувача @${userTag}
