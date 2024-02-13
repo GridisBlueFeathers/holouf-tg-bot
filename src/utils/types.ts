@@ -41,7 +41,7 @@ interface Chat {
     last_name?: string;
 }
 
-interface MessageEntity {
+export interface MessageEntity {
     type: "mention" | "hashtag" | "bot_command" | "cashtag" | "url" | "email" | "phone_number" | "text_link";
     offset: number;
     length: number;
@@ -55,4 +55,15 @@ interface LinkPreviewOptions {
 	prefer_smaller_media?: boolean;
 	prefer_large_media?: boolean;
 	show_above_text?: boolean;
+}
+
+export interface UserFields {
+	tag: string;
+	name: string;
+	birthDay: string;
+	location: string;
+	hololiverFrom: string;
+	oshi: string;
+	contentType: string;
+	freeSpace?: string;
 }

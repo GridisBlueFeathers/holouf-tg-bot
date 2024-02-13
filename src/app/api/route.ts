@@ -1,6 +1,8 @@
 import handleEventAnswer from "@/utils/handlers/handleEventAnswer";
 import handleEventNavigate from "@/utils/handlers/handleEventNavigate";
 import handleEventRegister from "@/utils/handlers/handleEventRegister";
+import handleGetForm from "@/utils/handlers/handleGetForm";
+import handleSupergroupCommand from "@/utils/handlers/handleSupergroupCommand";
 import handleSurvey from "@/utils/handlers/handleSurvey";
 import sendMessage from "@/utils/sendMessage";
 import sendPhoto from "@/utils/sendPhoto";
@@ -20,8 +22,38 @@ export async function POST(request: Request) {
         return new Response("OK");
     };
 
-    // this handles bot commands in private chats
-	if (update.message.chat.type === "private" && update.message.from.username && update.message.entities && update.message.entities.filter(entity => entity.type === "bot_command").length) {
+	if (update.message.from.username && update.message.entities && update.message.entities.filter(entity => entity.type === "bot_command").length) {
+        const command = update.message.entities.filter(entity => entity.type === "bot_command")[0];
+        const commandName = update.message.text.slice(command.offset + 1, command.offset + command.length);
+
+        //const restMessage = update.message.text.slice(command.offset + command.length + 1);
+		switch(commandName) {
+			case "yo":
+				await sendMessage({message: {
+					text: "da yo",
+					chat_id: update.message.chat.id,
+				}});
+				return new Response("OK");
+		}
+
+		switch (update.message.chat.type) {
+			case "supergroup":
+				handleSupergroupCommand({update: update});
+				break;
+			case "private":
+				switch (commandName) {
+					case "apply":
+						await handleSurvey({chatId: update.message.chat.id});
+						break;
+				}			
+				break;
+		}
+
+		return new Response("OK");
+	}
+
+    // this handles bot commands in private chats (deprecated for all chats commands above)
+	/*if (update.message.chat.type === "private" && update.message.from.username && update.message.entities && update.message.entities.filter(entity => entity.type === "bot_command").length) {
         const command = update.message.entities.filter(entity => entity.type === "bot_command")[0];
         const commandName = update.message.text.slice(command.offset + 1, command.offset + command.length);
 
@@ -29,15 +61,12 @@ export async function POST(request: Request) {
         switch (commandName) {
             case "yo":
                 await sendMessage({message: {
-					text: "yo yo",
+					text: "da yo",
 					chat_id: update.message.chat.id,
 				}});
                 break;
-            case "apply":
-                await handleSurvey({chatId: update.message.chat.id});
-				break;
 			// commenting for now, until handle events programmatically
-            /*case "register":
+            case "register":
                 await handleEventRegister(update.message.from)
                 break;
             case "answer":
@@ -45,10 +74,10 @@ export async function POST(request: Request) {
                 break;
             case "navigate":
                 await handleEventNavigate({ user: update.message.from, option: restMessage });
-                break;*/
+                break;
         };
         return new Response("OK");
-    };
+    };*/
 
     // this handles other messages in private chats
     /*if (update.message.chat.type === "private" && update.message.from.username && update.message.from.username === "GridisBlueFeathers") {
