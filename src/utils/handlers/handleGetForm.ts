@@ -42,7 +42,7 @@ const handleGetForm = async ({update}: {update: Update}) => {
 1. Ім'я/нікнейм/прізвисько
 ${userFields.name}
 2. День народження (вік)
-${userFields.birthDay}
+${userFields.birthday}
 3. Місце проживання
 ${userFields.location}
 4. Дізнався(-лась) про Гололайв
@@ -51,8 +51,7 @@ ${userFields.hololiverFrom}
 ${userFields.oshi}
 6. Подобається контент
 ${userFields.contentType}
-7. Про себе
-${userFields.freeSpace}`,
+${!!userFields.freeSpace ? `7. Про себе\n${userFields.freeSpace}` : ""}`
 			}
 		});
 	} catch (err) {

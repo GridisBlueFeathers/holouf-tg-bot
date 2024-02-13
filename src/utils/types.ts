@@ -60,7 +60,7 @@ interface LinkPreviewOptions {
 export interface UserFields {
 	tag: string;
 	name: string;
-	birthDay: string;
+	birthday: string;
 	location: string;
 	hololiverFrom: string;
 	oshi: string;

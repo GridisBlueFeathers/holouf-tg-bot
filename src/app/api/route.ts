@@ -7,6 +7,7 @@ import handleSurvey from "@/utils/handlers/handleSurvey";
 import sendMessage from "@/utils/sendMessage";
 import sendPhoto from "@/utils/sendPhoto";
 import { Update } from "@/utils/types";
+import { NextRequest } from "next/server";
 
 const ALLOWED_USERS = [
     "GridisBlueFeathers",
@@ -15,7 +16,7 @@ const ALLOWED_USERS = [
     "smallhours"
 ];
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     const update = await request.json() as Update;
     
     if (!update.message.chat || !update.message.from || !update.message.text) {
