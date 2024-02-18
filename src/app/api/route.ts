@@ -1,9 +1,10 @@
+import handleApply from "@/utils/handlers/handleApply";
 import handleEventAnswer from "@/utils/handlers/handleEventAnswer";
 import handleEventNavigate from "@/utils/handlers/handleEventNavigate";
 import handleEventRegister from "@/utils/handlers/handleEventRegister";
 import handleGetForm from "@/utils/handlers/handleGetForm";
+import handleStart from "@/utils/handlers/handleStart";
 import handleSupergroupCommand from "@/utils/handlers/handleSupergroupCommand";
-import handleSurvey from "@/utils/handlers/handleSurvey";
 import sendMessage from "@/utils/sendMessage";
 import sendPhoto from "@/utils/sendPhoto";
 import { Update } from "@/utils/types";
@@ -20,8 +21,19 @@ export async function POST(request: NextRequest) {
     const update = await request.json() as Update;
     
     if (!update.message.chat || !update.message.from || !update.message.text) {
+		console.log("yo");
         return new Response("OK");
     };
+
+	if (!update.message.from?.username) {
+		await sendMessage({
+			message: {
+				text: "Будь ласка, зробить собі юзернейм в Телергамі",
+				chat_id: update.message.chat.id,
+			}
+		})
+		return new Response("OK");
+	}
 
 	if (update.message.from.username && update.message.entities && update.message.entities.filter(entity => entity.type === "bot_command").length) {
         const command = update.message.entities.filter(entity => entity.type === "bot_command")[0];
@@ -44,7 +56,10 @@ export async function POST(request: NextRequest) {
 			case "private":
 				switch (commandName) {
 					case "apply":
-						await handleSurvey({chatId: update.message.chat.id});
+						await handleApply({ update: update });
+						return new Response("OK");
+					case "start":
+						await handleStart({ update: update });
 						return new Response("OK");
 				}			
 				return new Response("OK");

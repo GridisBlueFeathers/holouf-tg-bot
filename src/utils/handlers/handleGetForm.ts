@@ -1,6 +1,8 @@
 import { kv } from "@vercel/kv";
 import { Update, UserFields } from "../types";
 import sendMessage from "../sendMessage";
+import { db } from "@/firebase/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const handleGetForm = async ({update}: {update: Update}) => {
 	try {
@@ -23,6 +25,51 @@ const handleGetForm = async ({update}: {update: Update}) => {
 
 		const userTag = update.message.text.slice(usertagEntity[0].offset + 1, usertagEntity[0].offset + usertagEntity[0].length);
 		const userFields = await kv.hgetall(`mem:${userTag}`);
+
+		if (update.message.chat.id === Number(process.env.DEV_CHAT_ID)) {
+			const membersRef = collection(db, "members");
+			const q = query(membersRef, where("tgTag", "==", userTag))
+
+			const querySnapshot = await getDocs(q);
+			if (querySnapshot.empty) {
+				await sendMessage({
+					message: {
+						text: "Нема члена чату з таким юзернеймом",
+						chat_id: update.message.chat.id,
+					}
+				})
+			} else if (querySnapshot.size > 1) {
+				await sendMessage({
+					message: {
+						text: "Виникла помилка",
+						chat_id: update.message.chat.id,
+					}
+				})
+			} else {
+				const userFirebaseFields = querySnapshot.docs[0].data();
+
+				await sendMessage({
+				message: {
+					chat_id: update.message.chat.id,
+					text: `Анкета користувача @${userTag}
+
+1. Ім'я/нікнейм/прізвисько
+${userFirebaseFields.name}
+2. День народження (вік)
+${userFirebaseFields.birthday}
+3. Місце проживання
+${userFirebaseFields.location}
+4. Дізнався(-лась) про Гололайв
+${userFirebaseFields.hololiverFrom}
+5. Оші
+${userFirebaseFields.oshi}
+6. Подобається контент
+${userFirebaseFields.contentType}
+${!!userFirebaseFields.about ? `7. Про себе\n${userFirebaseFields.about}` : ""}`
+				}
+				});
+			}
+		}
 
 		if (!userFields) {
 			await sendMessage({

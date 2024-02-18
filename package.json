@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@vercel/kv": "^0.2.3",
+    "firebase": "^10.8.0",
     "next": "13.5.5",
     "react": "^18",
     "react-dom": "^18",
