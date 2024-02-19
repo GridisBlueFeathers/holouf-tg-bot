@@ -2,7 +2,7 @@ import { kv } from "@vercel/kv";
 import { Update, UserFields } from "../types";
 import sendMessage from "../sendMessage";
 import { db } from "@/firebase/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, limit, query, where } from "firebase/firestore";
 
 const handleGetForm = async ({update}: {update: Update}) => {
 	try {
@@ -28,20 +28,13 @@ const handleGetForm = async ({update}: {update: Update}) => {
 
 		if (update.message.chat.id === Number(process.env.DEV_CHAT_ID)) {
 			const membersRef = collection(db, "members");
-			const q = query(membersRef, where("tgTag", "==", userTag))
+			const q = query(membersRef, where("tgTag", "==", userTag), limit(1))
 
 			const querySnapshot = await getDocs(q);
 			if (querySnapshot.empty) {
 				await sendMessage({
 					message: {
 						text: "Нема члена чату з таким юзернеймом",
-						chat_id: update.message.chat.id,
-					}
-				})
-			} else if (querySnapshot.size > 1) {
-				await sendMessage({
-					message: {
-						text: "Виникла помилка",
 						chat_id: update.message.chat.id,
 					}
 				})

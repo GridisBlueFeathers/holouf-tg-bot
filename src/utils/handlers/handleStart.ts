@@ -1,4 +1,4 @@
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, limit, query, setDoc, where } from "firebase/firestore";
 import { Update } from "../types";
 import { db } from "@/firebase/firebase";
 import sendMessage from "../sendMessage";
@@ -9,10 +9,15 @@ const handleStart = async ({ update }: { update: Update}) => {
 	}
 
 	const membersRef = collection(db, "members");
+	const q = query(membersRef, where("tgTag", "==", update.message.from.username), limit(1));
 	
-	await setDoc(doc(membersRef, update.message.chat.id.toString()), {
-		tgTag: update.message.from.username,
-	});
+	const querySnapshot = await getDocs(q);
+	if (querySnapshot.empty) {
+		console.log("yo");
+		await setDoc(doc(membersRef, update.message.chat.id.toString()), {
+			tgTag: update.message.from.username,
+		});
+	}
 
 	await sendMessage({message: {
 		chat_id: update.message.chat.id,

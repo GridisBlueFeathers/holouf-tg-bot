@@ -1,4 +1,4 @@
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import sendMessage from "../sendMessage";
 import { db } from "@/firebase/firebase";
 import { Update } from "../types";
@@ -15,11 +15,15 @@ const handleApply = async ({ update }: { update: Update}) => {
 	}
 
 	const membersRef = collection(db, "members");
+	const q = query(membersRef, where("tgTag", "==", update.message.from.username));
 	
-	await setDoc(doc(membersRef, update.message.chat.id.toString()), {
-		tgTag: update.message.from.username,
-	});
-
+	const querySnapshot = await getDocs(q);
+	if (querySnapshot.empty) {
+		await setDoc(doc(membersRef, update.message.chat.id.toString()), {
+			tgTag: update.message.from.username,
+		});
+	}
+	
 	await sendMessage({message: {
 		chat_id: update.message.chat.id,
 		text: "Вітаю! Щоб отримати доступ до чату Hololive Ukrainian Fans, спочатку заповніть невеличку анкету.",

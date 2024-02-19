@@ -42,22 +42,26 @@ export async function POST(request: NextRequest) {
         //const restMessage = update.message.text.slice(command.offset + command.length + 1);
 		switch(commandName) {
 			case "yo":
-				await sendMessage({message: {
-					text: "da yo",
-					chat_id: update.message.chat.id,
-				}});
+				await sendMessage({
+					message: {
+						text: "da yo",
+						chat_id: update.message.chat.id,
+					}
+				});
 				return new Response("OK");
 		}
 
 		switch (update.message.chat.type) {
 			case "supergroup":
-				await handleSupergroupCommand({update: update});
+				await handleSupergroupCommand({ update: update });
 				return new Response("OK");
 			case "private":
 				switch (commandName) {
-					case "apply":
+					//since commands are doing the same, putting them under the same case
+					/*case "apply":
 						await handleApply({ update: update });
-						return new Response("OK");
+						return new Response("OK");*/
+					case "apply":
 					case "start":
 						await handleStart({ update: update });
 						return new Response("OK");
