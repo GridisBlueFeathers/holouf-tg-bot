@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
         return new Response("OK");
     };
 
-	if (!update.message.from?.username || update.message.chat.type == "private") {
+	if (!update.message.from?.username && update.message.chat.type == "private") {
 		await sendMessage({
 			message: {
 				text: "Будь ласка, зробить собі юзернейм в Телергамі (його можна потім прибрати)",
