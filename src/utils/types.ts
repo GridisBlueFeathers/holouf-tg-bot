@@ -32,7 +32,7 @@ export interface User {
     username?: string;
 }
 
-interface Chat {
+export interface Chat {
     id: number;
     type: "private" | "group" | "supergroup" | "channel";
     title?: string;
