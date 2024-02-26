@@ -1,4 +1,6 @@
+import yoCommand from "@/utils/handlers/commands/yoCommand";
 import handleApply from "@/utils/handlers/handleApply";
+import handleCommand from "@/utils/handlers/handleCommand";
 import handleEventAnswer from "@/utils/handlers/handleEventAnswer";
 import handleEventNavigate from "@/utils/handlers/handleEventNavigate";
 import handleEventRegister from "@/utils/handlers/handleEventRegister";
@@ -42,12 +44,14 @@ export async function POST(request: NextRequest) {
         //const restMessage = update.message.text.slice(command.offset + command.length + 1);
 		switch(commandName) {
 			case "yo":
-				await sendMessage({
-					message: {
-						text: "da yo",
-						chat_id: update.message.chat.id,
-					}
-				});
+				handleCommand({
+					allowedTypes: [
+						"supergroup",
+						"private"
+					],
+					command: yoCommand,
+					update: update
+				})
 				return new Response("OK");
 		}
 
