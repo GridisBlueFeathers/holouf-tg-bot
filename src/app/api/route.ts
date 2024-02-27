@@ -23,7 +23,6 @@ export async function POST(request: NextRequest) {
     const update = await request.json() as Update;
     
     if (!update.message.chat || !update.message.from || !update.message.text) {
-		console.log("yo");
         return new Response("OK");
     };
 
