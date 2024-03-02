@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
     "@vercel/kv": "^0.2.3",
+    "@vercel/postgres": "^0.7.2",
     "firebase": "^10.8.0",
     "next": "13.5.5",
     "react": "^18",
