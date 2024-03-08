@@ -54,24 +54,6 @@ export async function POST(request: NextRequest) {
 				return new Response("OK");
 		}
 
-		switch (update.message.chat.type) {
-			case "supergroup":
-				await handleSupergroupCommand({ update: update });
-				return new Response("OK");
-			case "private":
-				switch (commandName) {
-					//since commands are doing the same, putting them under the same case
-					/*case "apply":
-						await handleApply({ update: update });
-						return new Response("OK");*/
-					case "apply":
-					case "start":
-						await handleStart({ update: update });
-						return new Response("OK");
-				}			
-				return new Response("OK");
-		}
-
 		return new Response("OK");
 	}
 

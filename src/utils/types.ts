@@ -57,13 +57,13 @@ interface LinkPreviewOptions {
 	show_above_text?: boolean;
 }
 
-export interface UserFields {
-	tag: string;
+export interface UserForm {
+	tgTag: string;
 	name: string;
 	birthday: string;
 	location: string;
 	hololiverFrom: string;
 	oshi: string;
-	contentType: string;
-	freeSpace?: string;
+	content: string;
+	about: string;
 }
