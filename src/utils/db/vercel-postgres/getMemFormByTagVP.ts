@@ -1,11 +1,12 @@
 import { sql } from "@vercel/postgres";
 
 const getMemFormByTagVP = async ({ tgTag }: { tgTag: string }) => {
-	const { rows } = sql`SELECT 
+
+	/*const { rows } = sql`SELECT 
 		tg_tag,
 		name,
 		birthday,
-		location`
+		location`*/
 
 }
 
