@@ -1,3 +1,4 @@
+import applyCommand from "@/utils/handlers/commands/applyCommand";
 import yoCommand from "@/utils/handlers/commands/yoCommand";
 import handleApply from "@/utils/handlers/handleApply";
 import handleCommand from "@/utils/handlers/handleCommand";
@@ -50,8 +51,18 @@ export async function POST(request: NextRequest) {
 					],
 					command: yoCommand,
 					update: update
-				})
+				});
 				return new Response("OK");
+			case "apply":
+				handleCommand({
+					allowedTypes: [
+						"private"
+					],
+					command: applyCommand,
+					update: update,
+				});
+				return new Response("OK");
+				
 		}
 
 		return new Response("OK");

@@ -24,7 +24,17 @@ const insertMemFormVP = async ({ userForm }: { userForm: UserForm }) => {
 			${userForm.oshi},
 			${userForm.content},
 			${userForm.about}
-		);`;
+		)
+		ON CONFLICT (tg_tag)
+		UPDATE mem_forms
+		SET name = ${userForm.name},
+			birthday = ${userForm.birthday},
+			location = ${userForm.location},
+			hololiver_from = ${userForm.hololiverFrom},
+			oshi = ${userForm.oshi},
+			content = ${userForm.content},
+			about = ${userForm.about}
+		WHERE tg_tag = ${userForm.tgTag};`;
 
 	return;
 }

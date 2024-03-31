@@ -1,18 +1,9 @@
-import { db } from "@/firebase/firebase";
 import sendMessage from "@/utils/sendMessage";
-import { Chat, Update } from "@/utils/types";
-import { collection, query, where, getDocs, setDoc, doc } from "firebase/firestore";
+import { Update } from "@/utils/types";
 
 const applyCommand = async ({ update } : { update: Update }) => {
-	const allowedChatTypes: Chat["type"][] = [
-		"private",
-	]
-	
-	if (!allowedChatTypes.includes(update.message.chat.type)) {
-		return ;
-	}
-	
-	if (!update.message.from?.username) {
+	// Outdated Firebase document creation
+	/*if (!update.message.from?.username) {
 		await sendMessage({
 			message: {
 				text: "Будь ласка, зробить собі юзернейм в Телергамі",
@@ -30,7 +21,7 @@ const applyCommand = async ({ update } : { update: Update }) => {
 		await setDoc(doc(membersRef, update.message.chat.id.toString()), {
 			tgTag: update.message.from.username,
 		});
-	}
+	}*/
 	
 	await sendMessage({message: {
 		chat_id: update.message.chat.id,
