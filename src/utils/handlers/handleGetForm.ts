@@ -1,5 +1,5 @@
 import { kv } from "@vercel/kv";
-import { Update, UserFields } from "../types";
+import { Update } from "../types";
 import sendMessage from "../sendMessage";
 import { db } from "@/firebase/firebase";
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
